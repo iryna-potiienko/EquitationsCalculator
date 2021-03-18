@@ -132,17 +132,17 @@
         android:layout_height=    "wrap_content"
         >
         <TextView
-            android:text="Result from dyhotomy:"
+            android:text="Dyhotomy:"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView3" />
         <TextView
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_width="50.0dp"
+            android:layout_width="150.5dp"
             android:layout_height="wrap_content"
             android:id="@+id/DyhotomyResult" />
         <TextView
-            android:text="Number of iterations "
+            android:text="iterations "
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -154,21 +154,26 @@
         android:layout_height=    "wrap_content"
         >
         <TextView
-            android:text="Result from dyhotomy:"
+            android:text="Mod Newton:"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textViewM2" />
         <TextView
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_width="50.0dp"
+            android:layout_width="132.0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/M2" />
+            android:id="@+id/Method2" />
         <TextView
-            android:text="Number of iterations "
+            android:text="iterations "
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/IterationsNumberM2" />
+        <TextView
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="36.0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/Method2iter" />
     </LinearLayout>
     <LinearLayout
         android:orientation=    "horizontal"
@@ -176,21 +181,26 @@
         android:layout_height=    "wrap_content"
         >
         <TextView
-            android:text="Result from dyhotomy:"
+            android:text="Newton:"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textViewM3" />
         <TextView
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_width="50.0dp"
+            android:layout_width="163.5dp"
             android:layout_height="wrap_content"
-            android:id="@+id/M3" />
+            android:id="@+id/Method3" />
         <TextView
-            android:text="Number of iterations "
+            android:text="iterations "
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/IterationsNumberM3" />
+        <TextView
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="42.5dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/Method3iter" />
     </LinearLayout>
     
 </LinearLayout >

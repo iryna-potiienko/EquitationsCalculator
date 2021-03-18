@@ -28,14 +28,30 @@ namespace EquitationsCalculator
 
             EditText epsilon = FindViewById<EditText>(Resource.Id.Epsilon);
             Button calculateButton = FindViewById<Button>(Resource.Id.CalculateButton);
+
             TextView dyhotomyResult = FindViewById<TextView>(Resource.Id.DyhotomyResult);
             TextView iterationsNumber = FindViewById<TextView>(Resource.Id.IterationsNumber);
+            TextView modNewtonResult = FindViewById<TextView>(Resource.Id.Method2);
+            TextView modNewtonIterationsNumber = FindViewById<TextView>(Resource.Id.Method2iter);
+            TextView newtonResult = FindViewById<TextView>(Resource.Id.Method3);
+            TextView newtonIterationsNumber = FindViewById<TextView>(Resource.Id.Method3iter);
 
             //PlotView view = FindViewById<PlotView>(Resource.Id.plot_view);
             //view.Model = CreatePlotModel();
+            /*Steema.TeeChart.TChart tChart1 = new Steema.TeeChart.TChart(this);
+            Steema.TeeChart.Styles.Bar bar1 = new Steema.TeeChart.Styles.Bar();
+            tChart1.Series.Add(bar1);
+            bar1.Add(3, "Pears", Color.Red);
+            bar1.Add(4, "Apples", Color.Blue);
+            bar1.Add(2, "Oranges", Color.Green);
+            Steema.TeeChart.Themes.BlackIsBackTheme theme = new Steema.TeeChart.Themes.BlackIsBackTheme(tChart1.Chart);
+            theme.Apply();
+            SetContentView(tChart1);*/
 
             // Add code to translate number
             string dyhotomyResultNumber = string.Empty;
+            string modNewtonResultNumber = string.Empty;
+            string newtonResultNumber = string.Empty;
             Double a, b, k1, k2, k3;
 
             calculateButton.Click += (sender, e) =>
@@ -50,16 +66,25 @@ namespace EquitationsCalculator
                 k3 = Convert.ToDouble(k3Coef.Text);
                 //k4 = Convert.ToDouble(k4Coef.Text);
 
-                Equation equation = new Equation(k1, k2, k3);
+                Equation equation = new SquareEquation(k1, k2, k3);
                 dyhotomyResultNumber = Methods.Dyhotomy(a, b, equation).ToString();
+                modNewtonResultNumber = Methods.ModNewton(a, b, equation).ToString();
+                newtonResultNumber = Methods.Newton(a, b, equation).ToString();
+
                 if (string.IsNullOrWhiteSpace(dyhotomyResultNumber))
                 {
                     dyhotomyResult.Text = string.Empty;
+                    modNewtonResult.Text = string.Empty;
+                    newtonResult.Text = string.Empty;
                 }
                 else
                 {
                     dyhotomyResult.Text = dyhotomyResultNumber;
                     iterationsNumber.Text += Methods.iterations;
+                    modNewtonResult.Text = modNewtonResultNumber;
+                    modNewtonIterationsNumber.Text = Methods.iterations.ToString();
+                    newtonResult.Text = newtonResultNumber;
+                    newtonIterationsNumber.Text = Methods.iterations.ToString();
                 }
             };
         }
