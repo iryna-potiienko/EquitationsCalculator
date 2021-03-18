@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/linearLayout1">
+    <LinearLayout
+        android:orientation=    "horizontal"
+        android:layout_width=    "wrap_content"
+        android:layout_height=    "match_parent"
+        >
+        <TextView
+            android:text="Equation:  k1*x^2 +k2*x+k3 = 0"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView4"
+            android:layout_gravity="top|left"
+             />
+        <Button
+        android:text="Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button1" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation=    "horizontal"
+        android:layout_width=    "match_parent"
+        android:layout_height=    "match_parent"
+        >
+        <TextView
+            android:text="k1: "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/C1"
+            android:layout_marginRight="0.0dp"
+            android:gravity=    "center_horizontal" />
+        <EditText
+            android:inputType="number"
+            android:id="@+id/Coef1"
+            android:layout_width="wrap_content"
+            android:text="1"
+            android:layout_height="wrap_content"
+            android:gravity=    "center_horizontal"  />
+        <TextView
+            android:text="Enter k2: "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/C2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity=    "center_horizontal" />
+        <EditText
+            android:inputType="number"
+            android:id="@+id/Coef2"
+            android:layout_width="wrap_content"
+            android:text="2"
+            android:layout_height="wrap_content"
+            android:gravity=    "center_horizontal"    
+            />
+        <TextView
+            android:text="Enter k3: "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/C3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity=    "center_horizontal"    
+            />
+        <EditText
+            android:inputType="number"
+            android:id="@+id/Coef3"
+            android:text="-6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity=    "center_horizontal"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation=    "horizontal"
+        android:layout_width=    "match_parent"
+        android:layout_height=    "wrap_content"
+        >
+        <TextView
+            android:text="Enter a and b:"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView2" />
+        <EditText
+            android:inputType="number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/CoefficientA"
+            android:text="1" />
+        <EditText
+            android:inputType="number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/CoefficientB"
+            android:text="2" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation=    "horizontal"
+        android:layout_width=    "match_parent"
+        android:layout_height=    "wrap_content"
+        >
+        <TextView
+            android:text="Enter epsilon:"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView1" />
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/Epsilon"
+            android:text="0.0001"
+            android:inputType="number" />
+    </LinearLayout>
+
+    <Button
+        android:text="Calculate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/CalculateButton" />
+
+    <LinearLayout
+        android:orientation=    "horizontal"
+        android:layout_width=    "match_parent"
+        android:layout_height=    "wrap_content"
+        >
+        <TextView
+            android:text="Result from dyhotomy:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView3" />
+        <TextView
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="50.0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/DyhotomyResult" />
+        <TextView
+            android:text="Number of iterations "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/IterationsNumber" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation=    "horizontal"
+        android:layout_width=    "match_parent"
+        android:layout_height=    "wrap_content"
+        >
+        <TextView
+            android:text="Result from dyhotomy:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewM2" />
+        <TextView
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="50.0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/M2" />
+        <TextView
+            android:text="Number of iterations "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/IterationsNumberM2" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation=    "horizontal"
+        android:layout_width=    "match_parent"
+        android:layout_height=    "wrap_content"
+        >
+        <TextView
+            android:text="Result from dyhotomy:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewM3" />
+        <TextView
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="50.0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/M3" />
+        <TextView
+            android:text="Number of iterations "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/IterationsNumberM3" />
+    </LinearLayout>
+    
+</LinearLayout >
