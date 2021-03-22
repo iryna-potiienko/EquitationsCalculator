@@ -5,6 +5,8 @@ using Android.Runtime;
 using Android.Widget;
 using System;
 using System.IO;
+using Android;
+using Android.Content.PM;
 
 namespace EquitationsCalculator
 {
@@ -69,12 +71,13 @@ namespace EquitationsCalculator
             SetContentView(tChart1);*/
 
             // Add code to translate number
-            Equation equation;
+            
             string dyhotomyResultNumber = string.Empty;
             string modNewtonResultNumber = string.Empty;
             string newtonResultNumber = string.Empty;
-            Double a, b, k1, k2, k3;
-            Files filesW = new Files();
+            Double a=1, b=2, k1=1, k2=2, k3=-6;
+            Equation equation = new SquareEquation(k1, k2, k3);
+            //Files filesW = new Files();
 
             calculateButton.Click += (sender, e) =>
             {
@@ -124,13 +127,57 @@ namespace EquitationsCalculator
                 //bool isReadonly = Android.OS.Environment.MediaMountedReadOnly.Equals(Android.OS.Environment.ExternalStorageState);
                 //bool isWriteable = Android.OS.Environment.MediaMounted.Equals(Android.OS.Environment.ExternalStorageState);
 
-                var backingFile = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "results.txt");
+                //CheckAppPermissions();
+                var backingFile = Path.Combine(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments).AbsolutePath, "results.txt");
+                //var backingFile = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyPictures), "results.txt");
+                //var backingFile = Path.Combine(Android.Content.Context.GetExternalFilesDir(Android.OS.Environment.DirectoryDownloads), "results.txt");
+
+                
                 using (var writer = File.CreateText(backingFile))
                 {
-                    await writer.WriteLineAsync("Dyhotomy result: "+ dyhotomyResult.Text + "iterations: "+ iterationsNumber.Text);
-                    await writer.WriteLineAsync("ModNewton result: " + modNewtonResult.Text + "iterations: " + modNewtonIterationsNumber.Text);
-                    await writer.WriteLineAsync("Newton result: " + newtonResult.Text + "iterations: " + newtonIterationsNumber.Text);
+                    Double x = a, y;
+
+                    do
+                    {
+                        y = equation.f(x);
+                        await writer.WriteLineAsync(x + " " + y);
+                        x = x + 0.1;
+                    } while (x <= b);
                 }
+            };
+            readButton.Click += async (sender, e) =>
+            {
+                var backingFile = Path.Combine(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments).AbsolutePath, "startData.txt");
+                //var backingFile = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyPictures), "results.txt");
+
+                if (backingFile == null || !File.Exists(backingFile))
+                {
+                    //return 0;
+                    Console.WriteLine("no file!");
+                }
+
+                //var count = 0;
+                using (var reader = new StreamReader(backingFile, true))
+                {
+                    //string line;
+                    aNumb.Text = reader.ReadLine();
+                    bNumb.Text = reader.ReadLine();
+                    epsilon.Text = reader.ReadLine();
+                    k1Coef.Text = reader.ReadLine();
+                    k2Coef.Text = reader.ReadLine();
+                    k3Coef.Text = reader.ReadLine();
+
+                   /* while ((line = await reader.ReadLineAsync()) != null)
+                    {
+                        if (int.TryParse(line, out var newcount))
+                        {
+                            count = newcount;
+                        }
+                        //Console.WriteLine(line);
+                    }*/
+                }
+
+                //return count;
             };
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
@@ -138,6 +185,23 @@ namespace EquitationsCalculator
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+        private void CheckAppPermissions()
+        {
+            if ((int)Build.VERSION.SdkInt < 23)
+            {
+                return;
+            }
+            else
+            {
+                if (PackageManager.CheckPermission(Manifest.Permission.ReadExternalStorage, PackageName) != Permission.Granted
+                    && PackageManager.CheckPermission(Manifest.Permission.WriteExternalStorage, PackageName) != Permission.Granted)
+                {
+                    var permissions = new string[] { Manifest.Permission.ReadExternalStorage, Manifest.Permission.WriteExternalStorage };
+                    RequestPermissions(permissions, 1);
+                }
+            }
         }
     }
 }
