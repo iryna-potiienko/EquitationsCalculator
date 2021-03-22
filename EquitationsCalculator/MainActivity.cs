@@ -4,18 +4,36 @@ using Android.Support.V7.App;
 using Android.Runtime;
 using Android.Widget;
 using System;
+using System.IO;
 
 namespace EquitationsCalculator
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
     public class MainActivity : AppCompatActivity
     {
+        string equationType;
+        private void spinner_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
+        {
+            Spinner spinner = (Spinner)sender;
+            string toast = string.Format("The equation is {0}", spinner.GetItemAtPosition(e.Position));
+            equationType = spinner.GetItemAtPosition(e.Position).ToString();
+            Toast.MakeText(this, toast, ToastLength.Long).Show();
+        }
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
+
+            Spinner spinner = FindViewById<Spinner>(Resource.Id.spinner);
+
+            spinner.ItemSelected += new EventHandler<AdapterView.ItemSelectedEventArgs>(spinner_ItemSelected);
+            var adapter = ArrayAdapter.CreateFromResource(
+                    this, Resource.Array.planets_array, Android.Resource.Layout.SimpleSpinnerItem);
+
+            adapter.SetDropDownViewResource(Android.Resource.Layout.SimpleSpinnerDropDownItem);
+            spinner.Adapter = adapter;
 
             // Get our UI controls from the loaded layout
             var aNumb = FindViewById<EditText>(Resource.Id.CoefficientA);
@@ -28,6 +46,8 @@ namespace EquitationsCalculator
 
             EditText epsilon = FindViewById<EditText>(Resource.Id.Epsilon);
             Button calculateButton = FindViewById<Button>(Resource.Id.CalculateButton);
+            Button saveButton = FindViewById<Button>(Resource.Id.SaveButton);
+            Button readButton = FindViewById<Button>(Resource.Id.ReadButton);
 
             TextView dyhotomyResult = FindViewById<TextView>(Resource.Id.DyhotomyResult);
             TextView iterationsNumber = FindViewById<TextView>(Resource.Id.IterationsNumber);
@@ -49,10 +69,12 @@ namespace EquitationsCalculator
             SetContentView(tChart1);*/
 
             // Add code to translate number
+            Equation equation;
             string dyhotomyResultNumber = string.Empty;
             string modNewtonResultNumber = string.Empty;
             string newtonResultNumber = string.Empty;
             Double a, b, k1, k2, k3;
+            Files filesW = new Files();
 
             calculateButton.Click += (sender, e) =>
             {
@@ -66,7 +88,15 @@ namespace EquitationsCalculator
                 k3 = Convert.ToDouble(k3Coef.Text);
                 //k4 = Convert.ToDouble(k4Coef.Text);
 
-                Equation equation = new SquareEquation(k1, k2, k3);
+                if (equationType == "k1*x^2 +k2*x+k3 = 0") equation = new SquareEquation(k1, k2, k3);
+                else if (equationType == "k1*sin(x)^2 +k2*sin(x)+k3 = 0") {
+                    k3 = 0;
+                    k3Coef.Text = "0";
+                    equation = new SinEquation(k1, k2, k3);
+                }
+                if(equationType== "k1*ln(x^k2) + k3 = 0") equation = new LogEquation(k1, k2, k3);
+                else equation = new SquareEquation(k1, k2, k3);
+
                 dyhotomyResultNumber = Methods.Dyhotomy(a, b, equation).ToString();
                 modNewtonResultNumber = Methods.ModNewton(a, b, equation).ToString();
                 newtonResultNumber = Methods.Newton(a, b, equation).ToString();
@@ -85,6 +115,21 @@ namespace EquitationsCalculator
                     modNewtonIterationsNumber.Text = Methods.iterations.ToString();
                     newtonResult.Text = newtonResultNumber;
                     newtonIterationsNumber.Text = Methods.iterations.ToString();
+
+                    //await filesW.SaveCountAsync(int count);
+                }
+            };
+            saveButton.Click += async (sender, e) =>
+            {
+                //bool isReadonly = Android.OS.Environment.MediaMountedReadOnly.Equals(Android.OS.Environment.ExternalStorageState);
+                //bool isWriteable = Android.OS.Environment.MediaMounted.Equals(Android.OS.Environment.ExternalStorageState);
+
+                var backingFile = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "results.txt");
+                using (var writer = File.CreateText(backingFile))
+                {
+                    await writer.WriteLineAsync("Dyhotomy result: "+ dyhotomyResult.Text + "iterations: "+ iterationsNumber.Text);
+                    await writer.WriteLineAsync("ModNewton result: " + modNewtonResult.Text + "iterations: " + modNewtonIterationsNumber.Text);
+                    await writer.WriteLineAsync("Newton result: " + newtonResult.Text + "iterations: " + newtonIterationsNumber.Text);
                 }
             };
         }

@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">EquitationsCalculator</string>
     <string name="action_settings">Settings</string>
+  <string name="planet_prompt">Choose a type</string>
+  <string-array name="planets_array">
+    <item>k1*x^2 +k2*x+k3 = 0</item>
+    <item>k1*sin(x)^2 +k2*sin(x)+k3 = 0</item>
+    <item>k1*ln(x^k2) + k3 = 0</item>
+  </string-array>
 </resources>

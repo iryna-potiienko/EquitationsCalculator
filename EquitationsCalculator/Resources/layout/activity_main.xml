@@ -11,18 +11,28 @@
         android:layout_height=    "match_parent"
         >
         <TextView
-            android:text="Equation:  k1*x^2 +k2*x+k3 = 0"
+            android:text="Equation: "
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView4"
-            android:layout_gravity="top|left"
+            android:layout_gravity="center_horizontal"
              />
-        <Button
-        android:text="Button"
-        android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="110.5dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dip"
+            android:text="@string/planet_prompt"
+            android:layout_gravity="center_horizontal|right"
+    />
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/button1" />
+        android:prompt="@string/planet_prompt"
+        android:layout_gravity="center_horizontal"
+    />
+        
     </LinearLayout>
     <LinearLayout
         android:orientation=    "horizontal"
@@ -202,5 +212,20 @@
             android:layout_height="wrap_content"
             android:id="@+id/Method3iter" />
     </LinearLayout>
-    
+    <LinearLayout
+        android:orientation=    "horizontal"
+        android:layout_width=    "match_parent"
+        android:layout_height=    "wrap_content"
+        >
+        <Button
+            android:text="Save"
+            android:layout_width="149.0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/SaveButton" />
+        <Button
+            android:text="Read from file"
+            android:layout_width="149.0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/ReadButton" />
+    </LinearLayout>
 </LinearLayout >
