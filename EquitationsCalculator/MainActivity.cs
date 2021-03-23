@@ -7,6 +7,7 @@ using System;
 using System.IO;
 using Android;
 using Android.Content.PM;
+using Android.Content;
 
 namespace EquitationsCalculator
 {
@@ -50,6 +51,7 @@ namespace EquitationsCalculator
             Button calculateButton = FindViewById<Button>(Resource.Id.CalculateButton);
             Button saveButton = FindViewById<Button>(Resource.Id.SaveButton);
             Button readButton = FindViewById<Button>(Resource.Id.ReadButton);
+            Button plotButton = FindViewById<Button>(Resource.Id.PlotButton);
 
             TextView dyhotomyResult = FindViewById<TextView>(Resource.Id.DyhotomyResult);
             TextView iterationsNumber = FindViewById<TextView>(Resource.Id.IterationsNumber);
@@ -144,40 +146,36 @@ namespace EquitationsCalculator
                         x = x + 0.1;
                     } while (x <= b);
                 }
+                Toast.MakeText(this, "Saved to file", ToastLength.Short).Show();
             };
-            readButton.Click += async (sender, e) =>
+            readButton.Click += (sender, e) =>
             {
                 var backingFile = Path.Combine(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments).AbsolutePath, "startData.txt");
                 //var backingFile = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyPictures), "results.txt");
 
                 if (backingFile == null || !File.Exists(backingFile))
                 {
-                    //return 0;
-                    Console.WriteLine("no file!");
+                    Toast.MakeText(this, "File not exist", ToastLength.Long).Show();
                 }
-
-                //var count = 0;
-                using (var reader = new StreamReader(backingFile, true))
+                else
                 {
-                    //string line;
-                    aNumb.Text = reader.ReadLine();
-                    bNumb.Text = reader.ReadLine();
-                    epsilon.Text = reader.ReadLine();
-                    k1Coef.Text = reader.ReadLine();
-                    k2Coef.Text = reader.ReadLine();
-                    k3Coef.Text = reader.ReadLine();
-
-                   /* while ((line = await reader.ReadLineAsync()) != null)
+                    Toast.MakeText(this, "Information from file", ToastLength.Short).Show();
+                    using (var reader = new StreamReader(backingFile, true))
                     {
-                        if (int.TryParse(line, out var newcount))
-                        {
-                            count = newcount;
-                        }
-                        //Console.WriteLine(line);
-                    }*/
+                        aNumb.Text = reader.ReadLine();
+                        bNumb.Text = reader.ReadLine();
+                        epsilon.Text = reader.ReadLine();
+                        k1Coef.Text = reader.ReadLine();
+                        k2Coef.Text = reader.ReadLine();
+                        k3Coef.Text = reader.ReadLine();
+                    }
                 }
-
-                //return count;
+            };
+            plotButton.Click += (sender, e) =>
+            {
+                var intent = new Intent(this, typeof(Visualization));
+                //intent.PutStringArrayListExtra("phone_numbers", phoneNumbers);
+                StartActivity(intent);
             };
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
