@@ -5,6 +5,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,18 +14,19 @@ namespace EquitationsCalculator
 {
     public class SquareEquation: Equation
     {
-        public Double D;
-        public int rootsNumber;
-        public double[] apex;
-        public override Double k1 { get; set; }
-        public override Double k2 { get; set; }
-        public override Double k3 { get; set; }
-        public SquareEquation(double k1, double k2, double k3) {
-            this.k1 = k1;
-            this.k2 = k2;
-            this.k3 = k3;
-        }
-
+        //public Double D;
+        //public int rootsNumber;
+        //public double[] apex;
+        //public override Double k1 { get; set; }
+        //public override Double k2 { get; set; }
+        //public override Double k3 { get; set; }
+        /* public SquareEquation(double k1, double k2, double k3) {
+             this.k1 = k1;
+             this.k2 = k2;
+             this.k3 = k3;
+         }
+         */
+        public SquareEquation(double k1, double k2, double k3, double a, double b) : base(k1, k2, k3, a, b) { }
         public override double f(double x)
         {
             double ans = k1 * x * x + k2 * x + k3;
@@ -42,18 +44,47 @@ namespace EquitationsCalculator
         public int NumberOfRoots()
         {
             int number;
-            double d = Math.Pow(k2, 2) - 4 * k1 * k3;
+            double d = D();
             if (d > 0) number = 2;
             else if (d == 0) number = 1;
             else number = 0;
-            D = d;
-            rootsNumber = number;
+            //D = d;
+            //rootsNumber = number;
             return number;
         }
-        public void ApexCoordinates()
+        public double D()
         {
+            return Math.Pow(k2, 2) - 4 * k1 * k3;
+        }
+        public double[] ApexCoordinates()
+        {
+            double[] apex = new double[2];
             apex[0] = -k2 / (2 * k1);
-            apex[1] = -D / (4 * k1);
+            apex[1] = -D() / (4 * k1);
+            return apex;
+        }
+        public override int RootsAmountCheck()
+        {
+            if (NumberOfRoots() == 0) return 0;
+            int baseNumb = base.RootsAmountCheck();
+            if (baseNumb == 1) return 1;
+            else if (k1 * f(a) > 0)
+                if ((a < ApexCoordinates()[0] && b < ApexCoordinates()[0]) || (a > ApexCoordinates()[0] && b > ApexCoordinates()[0])) return 0;
+                else return 2;
+            else return 0;
+        }
+        public override void CreateOneRootIntervals()
+        {
+            double x;
+            var intervals = new List<List<double>>();
+            if (rootsNumber == 2)
+            {
+                x = ApexCoordinates()[0];
+                intervals.Add(new List<double> { a, x });
+                intervals.Add(new List<double> { x, b });
+                OneRootIntervals = intervals;
+            }
+            else base.CreateOneRootIntervals();
         }
     }
 }

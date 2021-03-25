@@ -11,17 +11,19 @@ using System.Text;
 
 namespace EquitationsCalculator
 {
-    class LogEquation: Equation
+    public class LogEquation : Equation
     {
-        public override Double k1 { get; set; }
-        public override Double k2 { get; set; }
-        public override Double k3 { get; set; }
-        public LogEquation(double k1, double k2, double k3)
+        //public override Double k1 { get; set; }
+        //public override Double k2 { get; set; }
+        //public override Double k3 { get; set; }
+        /*public LogEquation(double k1, double k2, double k3)
         {
             this.k1 = k1;
             this.k2 = k2;
             this.k3 = k3;
-        }
+            this.rootsNumber = RootsAmountCheck();
+        }*/
+        public LogEquation(double k1, double k2, double k3, double a, double b):base(k1,  k2,  k3,  a, b) { }
         private double log(double x)
         {
             return Math.Log(x);

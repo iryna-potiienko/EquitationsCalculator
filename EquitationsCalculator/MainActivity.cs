@@ -78,11 +78,14 @@ namespace EquitationsCalculator
             string modNewtonResultNumber = string.Empty;
             string newtonResultNumber = string.Empty;
             Double a=1, b=2, k1=1, k2=2, k3=-6;
-            Equation equation = new SquareEquation(k1, k2, k3);
+            Equation equation = new SquareEquation(k1, k2, k3, a,b);
             //Files filesW = new Files();
 
             calculateButton.Click += (sender, e) =>
             {
+                dyhotomyResult.Text = string.Empty;
+                modNewtonResult.Text = string.Empty;
+                newtonResult.Text = string.Empty;
                 //Methods equation = new Methods();
                 iterationsNumber.Text = "Number of iterations: ";
                 Methods.epsilon = Convert.ToDouble(epsilon.Text);
@@ -93,36 +96,39 @@ namespace EquitationsCalculator
                 k3 = Convert.ToDouble(k3Coef.Text);
                 //k4 = Convert.ToDouble(k4Coef.Text);
 
-                if (equationType == "k1*x^2 +k2*x+k3 = 0") equation = new SquareEquation(k1, k2, k3);
+                if (equationType == "k1*x^2 +k2*x+k3 = 0") equation = new SquareEquation(k1, k2, k3, a, b);
                 else if (equationType == "k1*sin(x)^2 +k2*sin(x)+k3 = 0") {
                     k3 = 0;
                     k3Coef.Text = "0";
-                    equation = new SinEquation(k1, k2, k3);
+                    equation = new SinEquation(k1, k2, k3, a, b);
                 }
-                if(equationType== "k1*ln(x^k2) + k3 = 0") equation = new LogEquation(k1, k2, k3);
-                else equation = new SquareEquation(k1, k2, k3);
+                if(equationType== "k1*ln(x^k2) + k3 = 0") equation = new LogEquation(k1, k2, k3, a, b);
+                else equation = new SquareEquation(k1, k2, k3, a, b);
 
-                dyhotomyResultNumber = Methods.Dyhotomy(a, b, equation).ToString();
+                Methods methods = new Methods();
+                methods.GetResult(equation);
+
+                /*dyhotomyResultNumber = Methods.Dyhotomy(a, b, equation).ToString();
                 modNewtonResultNumber = Methods.ModNewton(a, b, equation).ToString();
-                newtonResultNumber = Methods.Newton(a, b, equation).ToString();
+                newtonResultNumber = Methods.Newton(a, b, equation).ToString();*/
 
-                if (string.IsNullOrWhiteSpace(dyhotomyResultNumber))
+               /* if (string.IsNullOrWhiteSpace(dyhotomyResultNumber))
                 {
                     dyhotomyResult.Text = string.Empty;
                     modNewtonResult.Text = string.Empty;
                     newtonResult.Text = string.Empty;
                 }
                 else
-                {
-                    dyhotomyResult.Text = dyhotomyResultNumber;
-                    iterationsNumber.Text += Methods.iterations;
-                    modNewtonResult.Text = modNewtonResultNumber;
-                    modNewtonIterationsNumber.Text = Methods.iterations.ToString();
-                    newtonResult.Text = newtonResultNumber;
-                    newtonIterationsNumber.Text = Methods.iterations.ToString();
+                {*/
+                    dyhotomyResult.Text = Methods.StringResult(methods.DyhotomyRoots, methods.DyhotomyIterations);//dyhotomyResultNumber;
+                    //iterationsNumber.Text += Methods.iterations;
+                    modNewtonResult.Text = Methods.StringResult(methods.ModNewtonRoots, methods.ModNewtonIterations);
+                    //modNewtonIterationsNumber.Text = Methods.iterations.ToString();
+                    newtonResult.Text = Methods.StringResult(methods.NewtonRoots, methods.NewtonIterations);
+                    //newtonIterationsNumber.Text = Methods.iterations.ToString();
 
                     //await filesW.SaveCountAsync(int count);
-                }
+                //}
             };
             saveButton.Click += async (sender, e) =>
             {

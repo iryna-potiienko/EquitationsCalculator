@@ -11,10 +11,15 @@ using System.Text;
 
 namespace EquitationsCalculator
 {
-    public static class Methods
+    public class Methods
     {
         public static Double epsilon { get; set; }
-        public static Double iterations;
+        public int DyhotomyIterations;
+        public int ModNewtonIterations;
+        public int NewtonIterations;
+        public List<Double> DyhotomyRoots = new List<double>();
+        public List<Double> ModNewtonRoots = new List<double>();
+        public List<Double> NewtonRoots = new List<double>();
 
         /*public static double DyhotomyN(double a, double b, Equation equation)
         {
@@ -23,7 +28,37 @@ namespace EquitationsCalculator
 
             }
         }*/
-        public static double Dyhotomy(double a, double b, Equation equation)
+        public void GetResult(Equation equation)
+        {
+            //if (equation.rootsNumber == 0) return;
+         
+            foreach (var interval in equation.OneRootIntervals)
+            {
+                for (int i = 0; i <= 1; i++) {
+                    if (equation.f(interval[i]) == 0)
+                    {
+                        DyhotomyRoots.Add(interval[i]);
+                        ModNewtonRoots.Add(interval[i]);
+                        NewtonRoots.Add(interval[i]);
+                        return;
+                    } 
+                }
+                DyhotomyRoots.Add(Dyhotomy(interval[0], interval[1], equation));
+                ModNewtonRoots.Add(ModNewton(interval[0], interval[1], equation));
+                NewtonRoots.Add(Newton(interval[0], interval[1], equation));
+            }
+        }
+        public static string StringResult(List<double> roots, int? iterations)
+        {
+            string res="";
+            foreach(var root in roots)
+            {
+                res += " " + root.ToString();
+            }
+            res += " with " + iterations + " iterations";
+            return res;
+        }
+        public double Dyhotomy(double a, double b, Equation equation)
         {
             double x;
             int i = 0;
@@ -42,18 +77,18 @@ namespace EquitationsCalculator
                 }
                 else
                 {
-                    iterations = i;
+                    DyhotomyIterations = i;
                     return x;
                 }
                 //printf(" %i \t%f \t%f \t%f\n", i, x, b - a, f(x));
             }
 
             //printf("Оцінка кількості кроків: \n-апріорна: %i\n-апостаріорна: %i\n", apriori, i);
-            iterations = i;
+            DyhotomyIterations = i;
             return (a + b) / 2;
         }
 
-        public static double ModNewton(double a, double b, Equation equation)
+        public double ModNewton(double a, double b, Equation equation)
         {
             int i = 1;
             double h;
@@ -67,10 +102,10 @@ namespace EquitationsCalculator
                 i++;
                 h = Math.Abs(xn - x0);
             }
-            iterations = i;
+            NewtonIterations = i;
             return xn;
         }
-        public static double Newton(double a, double b, Equation equation)
+        public double Newton(double a, double b, Equation equation)
         {
             int i = 1;
             double h;
@@ -84,7 +119,7 @@ namespace EquitationsCalculator
                 i++;
                 h = Math.Abs(xn - x0);
             }
-            iterations = i;
+            NewtonIterations = i;
             return xn;
         }
     }
