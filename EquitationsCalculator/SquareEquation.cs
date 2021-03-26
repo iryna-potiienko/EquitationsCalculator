@@ -14,18 +14,6 @@ namespace EquitationsCalculator
 {
     public class SquareEquation: Equation
     {
-        //public Double D;
-        //public int rootsNumber;
-        //public double[] apex;
-        //public override Double k1 { get; set; }
-        //public override Double k2 { get; set; }
-        //public override Double k3 { get; set; }
-        /* public SquareEquation(double k1, double k2, double k3) {
-             this.k1 = k1;
-             this.k2 = k2;
-             this.k3 = k3;
-         }
-         */
         public SquareEquation(double k1, double k2, double k3, double a, double b) : base(k1, k2, k3, a, b) { }
         public override double f(double x)
         {
@@ -48,8 +36,6 @@ namespace EquitationsCalculator
             if (d > 0) number = 2;
             else if (d == 0) number = 1;
             else number = 0;
-            //D = d;
-            //rootsNumber = number;
             return number;
         }
         public double D()

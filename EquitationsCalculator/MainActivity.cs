@@ -96,13 +96,13 @@ namespace EquitationsCalculator
                 k3 = Convert.ToDouble(k3Coef.Text);
                 //k4 = Convert.ToDouble(k4Coef.Text);
 
-                if (equationType == "k1*x^2 +k2*x+k3 = 0") equation = new SquareEquation(k1, k2, k3, a, b);
-                else if (equationType == "k1*sin(x)^2 +k2*sin(x)+k3 = 0") {
-                    k3 = 0;
-                    k3Coef.Text = "0";
-                    equation = new SinEquation(k1, k2, k3, a, b);
+                //if (equationType == "k1*x^2 +k2*x+k3 = 0") equation = new SquareEquation(k1, k2, k3, a, b);
+                if (equationType == "sqrt(x + k1) + k2* x^k3 = 0") {
+                   // k3 = 0;
+                   // k3Coef.Text = "0";
+                    equation = new SqrtEquation(k1, k2, k3, a, b);
                 }
-                if(equationType== "k1*ln(x^k2) + k3 = 0") equation = new LogEquation(k1, k2, k3, a, b);
+                else if(equationType== "k1*ln(x^k2) + k3 = 0") equation = new ExpEquation(k1, k2, k3, a, b);
                 else equation = new SquareEquation(k1, k2, k3, a, b);
 
                 Methods methods = new Methods();

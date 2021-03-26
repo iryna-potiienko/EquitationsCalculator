@@ -14,8 +14,6 @@ namespace EquitationsCalculator
 {
     public abstract class Equation
     {
-        //Double k = 0, k2, k3, D;
-        //public rootsNumber;
         public Equation(double k1, double k2, double k3, double a, double b)
         {
             this.k1 = k1;
