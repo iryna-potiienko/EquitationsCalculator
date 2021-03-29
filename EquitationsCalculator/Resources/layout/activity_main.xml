@@ -13,19 +13,12 @@
         android:layout_height=    "match_parent"
         >
         <TextView
-            android:text="Equation: "
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView4"
-            android:layout_gravity="center_horizontal"
-             />
-        <TextView
-            android:layout_width="110.5dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dip"
             android:text="@string/planet_prompt"
             android:layout_gravity="center_horizontal|right"
+            android:textAppearance="?android:attr/textAppearanceMedium" 
     />
         <Spinner
             android:id="@+id/spinner"
@@ -42,7 +35,7 @@
         android:layout_height=    "match_parent"
         >
         <TextView
-            android:text="k1: "
+            android:text="Enter k1: "
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -50,12 +43,12 @@
             android:layout_marginRight="0.0dp"
             android:gravity=    "center_horizontal" />
         <EditText
-            android:inputType="number"
+            android:inputType="number|numberSigned|numberDecimal"
             android:id="@+id/Coef1"
             android:layout_width="wrap_content"
             android:text="1"
             android:layout_height="wrap_content"
-            android:gravity=    "center_horizontal"  />
+            android:gravity=    "center_horizontal"/>
         <TextView
             android:text="Enter k2: "
             android:textAppearance="?android:attr/textAppearanceMedium"
@@ -64,7 +57,7 @@
             android:layout_height="wrap_content"
             android:gravity=    "center_horizontal" />
         <EditText
-            android:inputType="number"
+            android:inputType="number|numberSigned|numberDecimal"
             android:id="@+id/Coef2"
             android:layout_width="wrap_content"
             android:text="2"
@@ -80,7 +73,7 @@
             android:gravity=    "center_horizontal"    
             />
         <EditText
-            android:inputType="number"
+            android:inputType="number|numberSigned|numberDecimal"
             android:id="@+id/Coef3"
             android:text="-6"
             android:layout_width="wrap_content"
@@ -95,23 +88,29 @@
         android:layout_height=    "wrap_content"
         >
         <TextView
-            android:text="Enter a and b:"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Enter interval [a; b]:"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView2" />
         <EditText
-            android:inputType="number"
+            android:inputType="number|numberDecimal|numberSigned"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/CoefficientA"
             android:text="1" />
         <EditText
-            android:inputType="number"
+            android:inputType="number|numberSigned|numberDecimal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/CoefficientB"
             android:text="2" />
+        <TextView
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ErrorInterval"
+            android:textColor="#ffeb3030" />
     </LinearLayout>
     <LinearLayout
         android:orientation=    "horizontal"
@@ -120,7 +119,7 @@
         >
         <TextView
             android:text="Enter epsilon:"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView1" />
@@ -129,15 +128,23 @@
             android:layout_height="wrap_content"
             android:id="@+id/Epsilon"
             android:text="0.0001"
-            android:inputType="number" />
+            android:inputType="number|numberDecimal" />
     </LinearLayout>
 
     <Button
         android:text="Calculate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/CalculateButton" />
-
+        android:id="@+id/CalculateButton"/>
+    <TextView
+        android:text="Results"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView4"
+        android:textStyle="bold"
+        android:typeface="monospace"
+        android:gravity="center_horizontal|center_vertical" />
     <LinearLayout
         android:orientation=    "horizontal"
         android:layout_width=    "match_parent"
@@ -147,18 +154,36 @@
             android:text="Dyhotomy:"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView3" />
+            android:id="@+id/textView3"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
         <TextView
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_width="150.5dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/DyhotomyResult" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation=    "horizontal"
+        android:layout_width=    "match_parent"
+        android:layout_height=    "match_parent"
+        >
         <TextView
-            android:text="iterations "
+            android:text="                  with "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/wIt1" />
+        <TextView
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:id="@+id/DyhotomyIterationsNumber"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:text=" iterations "
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/IterationsNumber" />
+            android:id="@+id/It1" />
     </LinearLayout>
     <LinearLayout
         android:orientation=    "horizontal"
@@ -166,26 +191,39 @@
         android:layout_height=    "wrap_content"
         >
         <TextView
-            android:text="Mod Newton:"
+            android:text="Modified Newton:"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textViewM2" />
+            android:id="@+id/textViewM2"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
         <TextView
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_width="132.0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/Method2" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation=    "horizontal"
+        android:layout_width=    "match_parent"
+        android:layout_height=    "match_parent"
+        >
         <TextView
-            android:text="iterations "
+            android:text="                  with "
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/IterationsNumberM2" />
+            android:id="@+id/wIt2" />
         <TextView
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_width="36.0dp"
+            android:layout_width="wrap_content"
+            android:id="@+id/ModNewtonIterationsNumber"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:text=" iterations "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/Method2iter" />
+            android:id="@+id/It2" />
     </LinearLayout>
     <LinearLayout
         android:orientation=    "horizontal"
@@ -196,23 +234,36 @@
             android:text="Newton:"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textViewM3" />
+            android:id="@+id/textViewM3"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
         <TextView
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_width="163.5dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/Method3" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation=    "horizontal"
+        android:layout_width=    "match_parent"
+        android:layout_height=    "match_parent"
+        >
         <TextView
-            android:text="iterations "
+            android:text="                  with "
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/IterationsNumberM3" />
+            android:id="@+id/wIt3" />
         <TextView
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_width="42.5dp"
+            android:layout_width="wrap_content"
+            android:id="@+id/NewtonIterationsNumber"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:text=" iterations "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/Method3iter" />
+            android:id="@+id/It3" />
     </LinearLayout>
     <LinearLayout
         android:orientation=    "horizontal"
@@ -220,10 +271,10 @@
         android:layout_height=    "wrap_content"
         >
         <Button
-            android:text="Save"
-            android:layout_width="120.0dp"
+            android:text="Clear All"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/SaveButton"
+            android:id="@+id/ClearAllButton"
             android:layout_marginRight="0.0dp"
             android:layout_marginLeft="0.0dp" />
         <Button

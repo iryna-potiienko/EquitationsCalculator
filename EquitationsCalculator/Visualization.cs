@@ -25,12 +25,11 @@ namespace EquitationsCalculator
             base.OnCreate(savedInstanceState);
            
             SfChart chart = new SfChart(this);
-            chart.Title.Text = "Chart";
+            chart.Title.Text = "Equation chart";
             chart.SetBackgroundColor(Color.White);
 
             //Initializing primary axis
             NumericalAxis primaryAxis = new NumericalAxis();
-            //primaryAxis.Interval = 0.1;
             chart.PrimaryAxis = primaryAxis;
 
             //Initializing secondary Axis

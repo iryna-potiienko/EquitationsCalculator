@@ -15,6 +15,10 @@ namespace EquitationsCalculator
     public class MainActivity : AppCompatActivity
     {
         string equationType;
+        Equation equation;
+        TextView dyhotomyResult, modNewtonResult, newtonResult, errorInterval;
+        TextView dyhotomyIterationsNumber, modNewtonIterationsNumber, newtonIterationsNumber;
+        EditText aNumb, bNumb, epsilon, k1Coef, k2Coef, k3Coef;
         private void spinner_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
         {
             Spinner spinner = (Spinner)sender;
@@ -39,125 +43,110 @@ namespace EquitationsCalculator
             spinner.Adapter = adapter;
 
             // Get our UI controls from the loaded layout
-            var aNumb = FindViewById<EditText>(Resource.Id.CoefficientA);
-            var bNumb = FindViewById<EditText>(Resource.Id.CoefficientB);
+            aNumb = FindViewById<EditText>(Resource.Id.CoefficientA);
+            bNumb = FindViewById<EditText>(Resource.Id.CoefficientB);
+            epsilon = FindViewById<EditText>(Resource.Id.Epsilon);
 
-            EditText k1Coef = FindViewById<EditText>(Resource.Id.Coef1);
-            EditText k2Coef = FindViewById<EditText>(Resource.Id.Coef2);
-            EditText k3Coef = FindViewById<EditText>(Resource.Id.Coef3);
-            //EditText k4Coef = FindViewById<EditText>(Resource.Id.Coef4);
+            k1Coef = FindViewById<EditText>(Resource.Id.Coef1);
+            k2Coef = FindViewById<EditText>(Resource.Id.Coef2);
+            k3Coef = FindViewById<EditText>(Resource.Id.Coef3);
 
-            EditText epsilon = FindViewById<EditText>(Resource.Id.Epsilon);
+            errorInterval = FindViewById<TextView>(Resource.Id.ErrorInterval);
+            
             Button calculateButton = FindViewById<Button>(Resource.Id.CalculateButton);
-            Button saveButton = FindViewById<Button>(Resource.Id.SaveButton);
             Button readButton = FindViewById<Button>(Resource.Id.ReadButton);
             Button plotButton = FindViewById<Button>(Resource.Id.PlotButton);
+            Button clearAllButton = FindViewById<Button>(Resource.Id.ClearAllButton);
 
-            TextView dyhotomyResult = FindViewById<TextView>(Resource.Id.DyhotomyResult);
-            TextView iterationsNumber = FindViewById<TextView>(Resource.Id.IterationsNumber);
-            TextView modNewtonResult = FindViewById<TextView>(Resource.Id.Method2);
-            TextView modNewtonIterationsNumber = FindViewById<TextView>(Resource.Id.Method2iter);
-            TextView newtonResult = FindViewById<TextView>(Resource.Id.Method3);
-            TextView newtonIterationsNumber = FindViewById<TextView>(Resource.Id.Method3iter);
+            dyhotomyResult = FindViewById<TextView>(Resource.Id.DyhotomyResult);
+            dyhotomyIterationsNumber = FindViewById<TextView>(Resource.Id.DyhotomyIterationsNumber);
+            modNewtonResult = FindViewById<TextView>(Resource.Id.Method2);
+            modNewtonIterationsNumber = FindViewById<TextView>(Resource.Id.ModNewtonIterationsNumber);
+            newtonResult = FindViewById<TextView>(Resource.Id.Method3);
+            newtonIterationsNumber = FindViewById<TextView>(Resource.Id.NewtonIterationsNumber);
 
-            //PlotView view = FindViewById<PlotView>(Resource.Id.plot_view);
-            //view.Model = CreatePlotModel();
-            /*Steema.TeeChart.TChart tChart1 = new Steema.TeeChart.TChart(this);
-            Steema.TeeChart.Styles.Bar bar1 = new Steema.TeeChart.Styles.Bar();
-            tChart1.Series.Add(bar1);
-            bar1.Add(3, "Pears", Color.Red);
-            bar1.Add(4, "Apples", Color.Blue);
-            bar1.Add(2, "Oranges", Color.Green);
-            Steema.TeeChart.Themes.BlackIsBackTheme theme = new Steema.TeeChart.Themes.BlackIsBackTheme(tChart1.Chart);
-            theme.Apply();
-            SetContentView(tChart1);*/
-
-            // Add code to translate number
-            
-            string dyhotomyResultNumber = string.Empty;
-            string modNewtonResultNumber = string.Empty;
-            string newtonResultNumber = string.Empty;
-            Double a=1, b=2, k1=1, k2=2, k3=-6;
-            Equation equation = new SquareEquation(k1, k2, k3, a,b);
-            //Files filesW = new Files();
-
-            calculateButton.Click += (sender, e) =>
+            calculateButton.Click += (sender, e) => Calculate();
+            readButton.Click += (sender, e) => ReadFile();
+            clearAllButton.Click += (sender, e) => ClearAll();
+            plotButton.Click += async (sender, e) =>
             {
-                dyhotomyResult.Text = string.Empty;
-                modNewtonResult.Text = string.Empty;
-                newtonResult.Text = string.Empty;
-                //Methods equation = new Methods();
-                iterationsNumber.Text = "Number of iterations: ";
-                Methods.epsilon = Convert.ToDouble(epsilon.Text);
-                a = Convert.ToDouble(aNumb.Text);
-                b = Convert.ToDouble(bNumb.Text);
-                k1 = Convert.ToDouble(k1Coef.Text);
-                k2 = Convert.ToDouble(k2Coef.Text);
-                k3 = Convert.ToDouble(k3Coef.Text);
-                //k4 = Convert.ToDouble(k4Coef.Text);
+                await TabulateAsync(equation);
+                var intent = new Intent(this, typeof(Visualization));
+                StartActivity(intent);
+            };
+        }
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
+        {
+            Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
-                //if (equationType == "k1*x^2 +k2*x+k3 = 0") equation = new SquareEquation(k1, k2, k3, a, b);
-                if (equationType == "sqrt(x + k1) + k2* x^k3 = 0") {
-                   // k3 = 0;
-                   // k3Coef.Text = "0";
-                    equation = new SqrtEquation(k1, k2, k3, a, b);
-                }
-                else if(equationType== "k1*ln(x^k2) + k3 = 0") equation = new ExpEquation(k1, k2, k3, a, b);
+            base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+        public void Calculate()
+        {
+            Double a = 1, b = 2, k1 = 1, k2 = 2, k3 = -6;
+            equation = new SquareEquation(k1, k2, k3, a, b);
+            ClearResults();
+
+            Methods.epsilon = Convert.ToDouble(epsilon.Text);
+            a = Convert.ToDouble(aNumb.Text);
+            b = Convert.ToDouble(bNumb.Text);
+            k1 = Convert.ToDouble(k1Coef.Text);
+            k2 = Convert.ToDouble(k2Coef.Text);
+            k3 = Convert.ToDouble(k3Coef.Text);
+
+            if (a >= b)
+            {
+                errorInterval.Text = "Incorrect interval!";
+            }
+            else
+            {
+                if (equationType == "sqrt(x+k1) + k2*x^k3 = 0") equation = new SqrtEquation(k1, k2, k3, a, b);
+                else if (equationType == "k1*exp(x*k2) + k3 = 0") equation = new ExpEquation(k1, k2, k3, a, b);
                 else equation = new SquareEquation(k1, k2, k3, a, b);
 
                 Methods methods = new Methods();
                 methods.GetResult(equation);
 
-                /*dyhotomyResultNumber = Methods.Dyhotomy(a, b, equation).ToString();
-                modNewtonResultNumber = Methods.ModNewton(a, b, equation).ToString();
-                newtonResultNumber = Methods.Newton(a, b, equation).ToString();*/
+                dyhotomyResult.Text = Methods.StringResult(methods.DyhotomyRoots);
+                dyhotomyIterationsNumber.Text += methods.DyhotomyIterations;
+                modNewtonResult.Text = Methods.StringResult(methods.ModNewtonRoots);
+                modNewtonIterationsNumber.Text += methods.ModNewtonIterations;
+                newtonResult.Text = Methods.StringResult(methods.NewtonRoots);
+                newtonIterationsNumber.Text += methods.NewtonIterations;
+            }
+        }
+        public async System.Threading.Tasks.Task TabulateAsync(Equation equation)
+        {
+            bool isWriteable = Android.OS.Environment.MediaMounted.Equals(Android.OS.Environment.ExternalStorageState);
 
-               /* if (string.IsNullOrWhiteSpace(dyhotomyResultNumber))
-                {
-                    dyhotomyResult.Text = string.Empty;
-                    modNewtonResult.Text = string.Empty;
-                    newtonResult.Text = string.Empty;
-                }
-                else
-                {*/
-                    dyhotomyResult.Text = Methods.StringResult(methods.DyhotomyRoots, methods.DyhotomyIterations);//dyhotomyResultNumber;
-                    //iterationsNumber.Text += Methods.iterations;
-                    modNewtonResult.Text = Methods.StringResult(methods.ModNewtonRoots, methods.ModNewtonIterations);
-                    //modNewtonIterationsNumber.Text = Methods.iterations.ToString();
-                    newtonResult.Text = Methods.StringResult(methods.NewtonRoots, methods.NewtonIterations);
-                    //newtonIterationsNumber.Text = Methods.iterations.ToString();
-
-                    //await filesW.SaveCountAsync(int count);
-                //}
-            };
-            saveButton.Click += async (sender, e) =>
+            if (isWriteable)
             {
-                //bool isReadonly = Android.OS.Environment.MediaMountedReadOnly.Equals(Android.OS.Environment.ExternalStorageState);
-                //bool isWriteable = Android.OS.Environment.MediaMounted.Equals(Android.OS.Environment.ExternalStorageState);
-
-                //CheckAppPermissions();
                 var backingFile = Path.Combine(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments).AbsolutePath, "results.txt");
-                //var backingFile = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyPictures), "results.txt");
-                //var backingFile = Path.Combine(Android.Content.Context.GetExternalFilesDir(Android.OS.Environment.DirectoryDownloads), "results.txt");
 
-                
                 using (var writer = File.CreateText(backingFile))
                 {
-                    Double x = a, y;
+                    Double x = equation.a, y;
 
                     do
                     {
                         y = equation.f(x);
                         await writer.WriteLineAsync(x + " " + y);
                         x = x + 0.1;
-                    } while (x <= b);
+                    } while (x <= equation.b);
                 }
                 Toast.MakeText(this, "Saved to file", ToastLength.Short).Show();
-            };
-            readButton.Click += (sender, e) =>
+            }
+            else Toast.MakeText(this, "No access to External Memory", ToastLength.Short).Show();
+        }
+        public void ReadFile()
+        {
+            bool isReadonly = Android.OS.Environment.MediaMountedReadOnly.Equals(Android.OS.Environment.ExternalStorageState);
+            bool isWriteable = Android.OS.Environment.MediaMounted.Equals(Android.OS.Environment.ExternalStorageState);
+
+            if (isReadonly || isWriteable)
             {
                 var backingFile = Path.Combine(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments).AbsolutePath, "startData.txt");
-                //var backingFile = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyPictures), "results.txt");
 
                 if (backingFile == null || !File.Exists(backingFile))
                 {
@@ -176,36 +165,28 @@ namespace EquitationsCalculator
                         k3Coef.Text = reader.ReadLine();
                     }
                 }
-            };
-            plotButton.Click += (sender, e) =>
-            {
-                var intent = new Intent(this, typeof(Visualization));
-                //intent.PutStringArrayListExtra("phone_numbers", phoneNumbers);
-                StartActivity(intent);
-            };
-        }
-        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
-        {
-            Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-
-            base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-
-        private void CheckAppPermissions()
-        {
-            if ((int)Build.VERSION.SdkInt < 23)
-            {
-                return;
             }
-            else
-            {
-                if (PackageManager.CheckPermission(Manifest.Permission.ReadExternalStorage, PackageName) != Permission.Granted
-                    && PackageManager.CheckPermission(Manifest.Permission.WriteExternalStorage, PackageName) != Permission.Granted)
-                {
-                    var permissions = new string[] { Manifest.Permission.ReadExternalStorage, Manifest.Permission.WriteExternalStorage };
-                    RequestPermissions(permissions, 1);
-                }
-            }
+            else Toast.MakeText(this, "No access to External Memory", ToastLength.Short).Show();
+        }
+        public void ClearResults()
+        {
+            dyhotomyResult.Text = string.Empty;
+            modNewtonResult.Text = string.Empty;
+            newtonResult.Text = string.Empty;
+            dyhotomyIterationsNumber.Text = string.Empty;
+            modNewtonIterationsNumber.Text = string.Empty;
+            newtonIterationsNumber.Text = string.Empty;
+            errorInterval.Text = string.Empty;
+        }
+        public void ClearAll()
+        {
+            aNumb.Text = string.Empty;
+            bNumb.Text = string.Empty;
+            epsilon.Text = string.Empty;
+            k1Coef.Text = string.Empty;
+            k2Coef.Text = string.Empty;
+            k3Coef.Text = string.Empty;
+            ClearResults();
         }
     }
 }
