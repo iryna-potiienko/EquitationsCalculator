@@ -82,16 +82,16 @@ namespace EquitationsCalculator
         public double ModNewton(double a, double b, Equation equation)
         {
             int i = 1;
-            double h;
+            //double h;
             double x0 = equation.f(a) * equation.f2Deriv(a) > 0 ? a : b;
             double xn = x0 - equation.f(x0) / equation.f1Deriv(x0);
-            h = Math.Abs(xn - x0);
+            //h = Math.Abs(xn - x0);
             while (Math.Abs(xn - x0) > epsilon)
             {
                 x0 = xn;
                 xn = x0 - equation.f(xn) / equation.f1Deriv(x0);
                 i++;
-                h = Math.Abs(xn - x0);
+                //h = Math.Abs(xn - x0);
             }
             NewtonIterations = i;
             return xn;
@@ -108,7 +108,7 @@ namespace EquitationsCalculator
                 x0 = xn;
                 xn = x0 - equation.f(xn) / equation.f1Deriv(xn);
                 i++;
-                h = Math.Abs(xn - x0);
+                //h = Math.Abs(xn - x0);
             }
             NewtonIterations = i;
             return xn;

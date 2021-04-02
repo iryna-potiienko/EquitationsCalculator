@@ -9,6 +9,8 @@ using Android;
 using Android.Content.PM;
 using Android.Content;
 
+using Android.Views;
+
 namespace EquitationsCalculator
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
@@ -26,6 +28,22 @@ namespace EquitationsCalculator
             equationType = spinner.GetItemAtPosition(e.Position).ToString();
             Toast.MakeText(this, toast, ToastLength.Long).Show();
         }
+        public override bool OnCreateOptionsMenu(IMenu menu)
+        {
+            MenuInflater.Inflate(Resource.Menu.top_menus, menu);
+            return base.OnCreateOptionsMenu(menu);
+        }
+        public override bool OnOptionsItemSelected(IMenuItem item)
+        {
+            Toast.MakeText(this, "Action selected: " + item.TitleFormatted,
+                ToastLength.Short).Show();
+            return base.OnOptionsItemSelected(item);
+        }
+        public void Info()
+        {
+            var intent = new Intent(this, typeof(AboutMe));
+            StartActivity(intent);
+        }
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -33,8 +51,12 @@ namespace EquitationsCalculator
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
 
-            Spinner spinner = FindViewById<Spinner>(Resource.Id.spinner);
+            Toolbar toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
+            toolbar.Title = "Equation Calculator";
+            toolbar.InflateMenu(Resource.Menu.top_menus);
+            toolbar.MenuItemClick += (sender, e) => Info();
 
+            Spinner spinner = FindViewById<Spinner>(Resource.Id.spinner);
             spinner.ItemSelected += new EventHandler<AdapterView.ItemSelectedEventArgs>(spinner_ItemSelected);
             var adapter = ArrayAdapter.CreateFromResource(
                     this, Resource.Array.planets_array, Android.Resource.Layout.SimpleSpinnerItem);
@@ -70,9 +92,12 @@ namespace EquitationsCalculator
             clearAllButton.Click += (sender, e) => ClearAll();
             plotButton.Click += async (sender, e) =>
             {
-                await TabulateAsync(equation);
-                var intent = new Intent(this, typeof(Visualization));
-                StartActivity(intent);
+                if (EquationInitialize())
+                {
+                    await TabulateAsync();
+                    var intent = new Intent(this, typeof(Visualization));
+                    StartActivity(intent);
+                }
             };
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
@@ -84,27 +109,11 @@ namespace EquitationsCalculator
 
         public void Calculate()
         {
-            Double a = 1, b = 2, k1 = 1, k2 = 2, k3 = -6;
-            equation = new SquareEquation(k1, k2, k3, a, b);
+            
             ClearResults();
 
-            Methods.epsilon = Convert.ToDouble(epsilon.Text);
-            a = Convert.ToDouble(aNumb.Text);
-            b = Convert.ToDouble(bNumb.Text);
-            k1 = Convert.ToDouble(k1Coef.Text);
-            k2 = Convert.ToDouble(k2Coef.Text);
-            k3 = Convert.ToDouble(k3Coef.Text);
-
-            if (a >= b)
+            if (EquationInitialize())
             {
-                errorInterval.Text = "Incorrect interval!";
-            }
-            else
-            {
-                if (equationType == "sqrt(x+k1) + k2*x^k3 = 0") equation = new SqrtEquation(k1, k2, k3, a, b);
-                else if (equationType == "k1*exp(x*k2) + k3 = 0") equation = new ExpEquation(k1, k2, k3, a, b);
-                else equation = new SquareEquation(k1, k2, k3, a, b);
-
                 Methods methods = new Methods();
                 methods.GetResult(equation);
 
@@ -116,18 +125,41 @@ namespace EquitationsCalculator
                 newtonIterationsNumber.Text += methods.NewtonIterations;
             }
         }
-        public async System.Threading.Tasks.Task TabulateAsync(Equation equation)
+        public bool EquationInitialize()
+        {
+            Double a, b, k1, k2, k3;
+
+            Methods.epsilon = Convert.ToDouble(epsilon.Text);
+            a = Convert.ToDouble(aNumb.Text);
+            b = Convert.ToDouble(bNumb.Text);
+            k1 = Convert.ToDouble(k1Coef.Text);
+            k2 = Convert.ToDouble(k2Coef.Text);
+            k3 = Convert.ToDouble(k3Coef.Text);
+
+            if (a >= b)
+            {
+                errorInterval.Text = "Incorrect interval!";
+                return false;
+            }
+            else
+            {
+                if (equationType == "sqrt(x+k1) + k2*x^k3 = 0") equation = new SqrtEquation(k1, k2, k3, a, b);
+                else if (equationType == "k1*exp(x*k2) + k3 = 0") equation = new ExpEquation(k1, k2, k3, a, b);
+                else equation = new SquareEquation(k1, k2, k3, a, b);
+                return true;
+            }
+        }
+        public async System.Threading.Tasks.Task TabulateAsync()
         {
             bool isWriteable = Android.OS.Environment.MediaMounted.Equals(Android.OS.Environment.ExternalStorageState);
 
             if (isWriteable)
             {
+                Double x = equation.a, y;
                 var backingFile = Path.Combine(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments).AbsolutePath, "results.txt");
 
                 using (var writer = File.CreateText(backingFile))
                 {
-                    Double x = equation.a, y;
-
                     do
                     {
                         y = equation.f(x);
@@ -154,6 +186,7 @@ namespace EquitationsCalculator
                 }
                 else
                 {
+                    ClearAll();
                     Toast.MakeText(this, "Information from file", ToastLength.Short).Show();
                     using (var reader = new StreamReader(backingFile, true))
                     {
